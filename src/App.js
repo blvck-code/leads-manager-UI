@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect} from 'react';
+import Dashboard from './components/leads/Dashboard'
+import Alerts from './components/layouts/Alerts'
+import Header from './components/layouts/Header'
+import Register from './components/account/Register'
+import Login from './components/account/Login'
+import './App.css'
+import './static/font-awesome-4.7.0/css/font-awesome.min.css'
+import {BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-dom'
+import PrivateRouter from './components/common/PrivateRouter'
+import { connect } from 'react-redux'
+import {loadUser} from './actions/auth'
 
-function App() {
+
+function App({loadUser}) {
+
+  useEffect(() => {
+    loadUser()
+  }, [])
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <Header />
+      <Alerts />
+      <div className="container wrapper">
+        <Switch>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <PrivateRouter exact path="/" component={Dashboard} />
+        </Switch>
+      </div>
+    </Router>
+  )
 }
 
-export default App;
+export default connect(null, {loadUser})(App)
