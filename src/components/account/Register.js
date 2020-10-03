@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import {register} from '../../actions/auth'
 import { connect } from 'react-redux'
 import {returnErrors} from '../../actions/messages'
 
-function Register({register, returnErrors}) {
+function Register({register, returnErrors, auth}) {
 
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
@@ -31,6 +31,10 @@ function Register({register, returnErrors}) {
             // console.log(email, username, password, password2);
             register(email, username, password, password2);
         }
+    }
+
+    if(auth.isAuthenticated && auth.token !== 'undefined' && auth.token !== null){
+        return <Redirect to="/" />
     }
 
     return (
@@ -89,4 +93,8 @@ function Register({register, returnErrors}) {
     )
 }
 
-export default connect(null, {register, returnErrors})(Register)
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+
+export default connect(mapStateToProps, {register, returnErrors})(Register)
